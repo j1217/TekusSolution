@@ -32,12 +32,30 @@ namespace Tekus.Domain.Entities
         /// <param name="email">Correo electrónico del proveedor.</param>
         public Provider(string name, Email email)
         {
-            // Validación de nombre del proveedor
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("El nombre del proveedor es requerido.");
 
             Name = name;
-            Email = email;
+            Email = email ?? throw new ArgumentNullException(nameof(email));
+        }
+
+        /// <summary>
+        /// Actualiza el nombre del proveedor.
+        /// </summary>
+        public void UpdateName(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("El nombre del proveedor es requerido.");
+
+            Name = name;
+        }
+
+        /// <summary>
+        /// Actualiza el correo electrónico del proveedor.
+        /// </summary>
+        public void UpdateEmail(Email email)
+        {
+            Email = email ?? throw new ArgumentNullException(nameof(email));
         }
 
         // Constructor privado para frameworks de persistencia como Entity Framework Core

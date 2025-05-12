@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Tekus.Application.DTOs.Provider;
-using Tekus.Application.DTOs.Service;
+using Tekus.Application.DTOs.Services;
 using Tekus.Domain.Entities;
 
 namespace Tekus.Application.Mappings

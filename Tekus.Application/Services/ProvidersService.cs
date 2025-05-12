@@ -1,16 +1,17 @@
 ﻿using AutoMapper;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Tekus.Application.DTOs.Services;
+using Tekus.Application.DTOs.Provider;
 using Tekus.Application.Interfaces;
 using Tekus.Domain.Entities;
 using Tekus.Domain.Interfaces;
+using Tekus.Domain.ValueObjects;
 
 namespace Tekus.Application.Services
 {
     /// <summary>
-    /// Implementación de los servicios relacionados con los proveedores y sus servicios.
+    /// Servicio de aplicación encargado de la gestión de proveedores.
     /// </summary>
     public class ProvidersService : IProvidersService
     {
@@ -18,10 +19,8 @@ namespace Tekus.Application.Services
         private readonly IMapper _mapper;
 
         /// <summary>
-        /// Constructor para inicializar el servicio de proveedores.
+        /// Constructor que inyecta dependencias requeridas.
         /// </summary>
-        /// <param name="providerRepository">Repositorio de proveedores</param>
-        /// <param name="mapper">Instancia de AutoMapper para mapear entre DTOs y entidades</param>
         public ProvidersService(IProviderRepository providerRepository, IMapper mapper)
         {
             _providerRepository = providerRepository;
@@ -29,101 +28,65 @@ namespace Tekus.Application.Services
         }
 
         /// <summary>
-        /// Obtiene todos los servicios asociados a un proveedor específico.
+        /// Obtiene una lista paginada de proveedores, opcionalmente filtrada por un término de búsqueda.
         /// </summary>
-        /// <param name="search">Búsqueda opcional de servicios por nombre</param>
-        /// <param name="page">Número de página para paginación</param>
-        /// <param name="pageSize">Tamaño de página para paginación</param>
-        /// <returns>Lista de servicios mapeada a DTOs</returns>
-        public async Task<List<ServiceDto>> GetAllAsync(string search = null, int page = 1, int pageSize = 10)
+        public async Task<List<ProviderDto>> GetAllAsync(string search = null, int page = 1, int pageSize = 10)
         {
-            // Obtención de servicios de la base de datos (puedes filtrar por nombre si 'search' no es nulo)
-            var services = await _providerRepository.GetAllServicesAsync(search, page, pageSize);
-
-            // Mapeo de entidades a DTOs
-            var serviceDtos = _mapper.Map<List<ServiceDto>>(services);
-            return serviceDtos;
+            var providers = await _providerRepository.GetAllAsync(page, pageSize, search);
+            return _mapper.Map<List<ProviderDto>>(providers);
         }
 
         /// <summary>
-        /// Obtiene un servicio por su ID.
+        /// Obtiene un proveedor específico por su identificador único.
         /// </summary>
-        /// <param name="id">ID del servicio</param>
-        /// <returns>DTO del servicio</returns>
-        public async Task<ServiceDto> GetByIdAsync(int id)
+        public async Task<ProviderDto> GetByIdAsync(Guid id)
         {
-            // Obtención del servicio de la base de datos
-            var service = await _providerRepository.GetServiceByIdAsync(id);
+            var provider = await _providerRepository.GetByIdAsync(id);
+            if (provider == null)
+                throw new ArgumentException("Proveedor no encontrado.");
 
-            // Mapeo de la entidad a DTO
-            var serviceDto = _mapper.Map<ServiceDto>(service);
-            return serviceDto;
+            return _mapper.Map<ProviderDto>(provider);
         }
 
         /// <summary>
-        /// Crea un nuevo servicio.
+        /// Crea un nuevo proveedor a partir de los datos proporcionados.
         /// </summary>
-        /// <param name="dto">DTO con la información del nuevo servicio</param>
-        /// <returns>DTO del servicio creado</returns>
-        public async Task<ServiceDto> CreateAsync(CreateServiceDto dto)
+        public async Task<ProviderDto> CreateAsync(CreateProviderDto dto)
         {
-            // Mapeo del DTO a la entidad
-            var service = _mapper.Map<Service>(dto);
+            var email = new Email(dto.Email);
+            var provider = new Provider(dto.Name, email);
 
-            // Creación del servicio en la base de datos
-            await _providerRepository.AddServiceAsync(service);
-
-            // Mapeo de la entidad creada a DTO
-            var serviceDto = _mapper.Map<ServiceDto>(service);
-            return serviceDto;
+            await _providerRepository.AddAsync(provider);
+            return _mapper.Map<ProviderDto>(provider);
         }
 
         /// <summary>
-        /// Actualiza un servicio existente.
+        /// Actualiza los datos de un proveedor existente.
         /// </summary>
-        /// <param name="id">ID del servicio a actualizar</param>
-        /// <param name="dto">DTO con los nuevos datos del servicio</param>
-        /// <returns>DTO del servicio actualizado</returns>
-        public async Task<ServiceDto> UpdateAsync(int id, UpdateServiceDto dto)
+        public async Task<ProviderDto> UpdateAsync(Guid id, UpdateProviderDto dto)
         {
-            // Obtención del servicio existente
-            var service = await _providerRepository.GetServiceByIdAsync(id);
+            var existing = await _providerRepository.GetByIdAsync(id);
+            if (existing == null)
+                throw new ArgumentException("Proveedor no encontrado.");
 
-            if (service == null)
-            {
-                // Si el servicio no existe, lanzamos una excepción
-                throw new KeyNotFoundException($"El servicio con ID {id} no fue encontrado.");
-            }
+            // Actualización de propiedades permitidas
+            existing.UpdateName(dto.Name);
+            existing.UpdateEmail(new Email(dto.Email));
 
-            // Mapeo de los datos de actualización
-            _mapper.Map(dto, service);
-
-            // Actualización del servicio en la base de datos
-            await _providerRepository.UpdateServiceAsync(service);
-
-            // Mapeo de la entidad actualizada a DTO
-            var serviceDto = _mapper.Map<ServiceDto>(service);
-            return serviceDto;
+            await _providerRepository.UpdateAsync(existing);
+            return _mapper.Map<ProviderDto>(existing);
         }
 
         /// <summary>
-        /// Elimina un servicio por su ID.
+        /// Elimina un proveedor por su identificador único.
         /// </summary>
-        /// <param name="id">ID del servicio a eliminar</param>
-        /// <returns>Indicador de éxito de la eliminación</returns>
-        public async Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(Guid id)
         {
-            // Obtención del servicio a eliminar
-            var service = await _providerRepository.GetServiceByIdAsync(id);
+            var exists = await _providerRepository.ExistsAsync(id);
+            if (!exists)
+                return false;
 
-            if (service == null)
-            {
-                // Si el servicio no existe, lanzamos una excepción
-                throw new KeyNotFoundException($"El servicio con ID {id} no fue encontrado.");
-            }
-
-            // Eliminación del servicio
-            await _providerRepository.DeleteServiceAsync(service);
+            await _providerRepository.DeleteAsync(id);
             return true;
         }
     }

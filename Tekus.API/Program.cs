@@ -1,50 +1,33 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Tekus.Infrastructure.DependencyInjection; // << Asegúrate de importar este namespace
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// Agrega servicios del proyecto (JWT, Repos, AppServices, API externa, utilidades)
+builder.Services.AddProjectServices(builder.Configuration);
+
+// Swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Configuración de autenticación JWT
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
-    };
-});
-
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Middleware de desarrollo (Swagger)
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-// Usa la autenticación JWT
+// Middleware de autenticación y autorización
 app.UseAuthentication();
-
-// Usa la autorización (si es necesario)
 app.UseAuthorization();
 
 app.UseHttpsRedirection();
 
+// Ruta de prueba (puedes eliminarla luego)
 var summaries = new[]
 {
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
