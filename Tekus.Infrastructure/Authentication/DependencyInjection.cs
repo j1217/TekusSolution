@@ -19,13 +19,22 @@ public static class DependencyInjection
     /// <returns>La colección de servicios modificada.</returns>
     public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
-        // Cargar los valores de configuración desde appsettings.json
+        // Cargar configuración de JwtSettings desde appsettings.json
         var jwtSettings = new JwtSettings();
         configuration.Bind("JwtSettings", jwtSettings);
+
+        // Validar que los campos requeridos estén definidos
+        if (string.IsNullOrWhiteSpace(jwtSettings.Secret) ||
+            string.IsNullOrWhiteSpace(jwtSettings.Issuer) ||
+            string.IsNullOrWhiteSpace(jwtSettings.Audience))
+        {
+            throw new InvalidOperationException("Los valores de configuración JWT (Secret, Issuer, Audience) no están definidos correctamente en appsettings.json.");
+        }
 
         // Registrar configuración para inyección de dependencias
         services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
 
+        // Convertir la clave secreta en arreglo de bytes
         var key = Encoding.UTF8.GetBytes(jwtSettings.Secret);
 
         // Configurar el esquema de autenticación JWT
@@ -38,13 +47,13 @@ public static class DependencyInjection
         {
             options.TokenValidationParameters = new TokenValidationParameters
             {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                ValidIssuer = jwtSettings.Issuer,
-                ValidAudience = jwtSettings.Audience,
-                IssuerSigningKey = new SymmetricSecurityKey(key)
+                ValidateIssuer = true,                     // Validar el emisor del token
+                ValidateAudience = true,                   // Validar el destinatario del token
+                ValidateLifetime = true,                   // Validar expiración del token
+                ValidateIssuerSigningKey = true,           // Validar firma del token
+                ValidIssuer = jwtSettings.Issuer,          // Emisor válido
+                ValidAudience = jwtSettings.Audience,      // Audiencia válida
+                IssuerSigningKey = new SymmetricSecurityKey(key) // Clave de firma
             };
         });
 
