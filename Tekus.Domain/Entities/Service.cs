@@ -17,7 +17,7 @@ namespace Tekus.Domain.Entities
         /// <summary>
         /// Id del proveedor asociado a este servicio.
         /// </summary>
-        public int ProviderId { get; private set; }
+        public Guid ProviderId { get; private set; }  // Cambiado de int a Guid
 
         /// <summary>
         /// Entidad del proveedor asociado.
@@ -27,7 +27,7 @@ namespace Tekus.Domain.Entities
         /// <summary>
         /// Id del país asociado a este servicio.
         /// </summary>
-        public int CountryId { get; private set; }
+        public Guid CountryId { get; private set; }  // Cambiado de int a Guid
 
         /// <summary>
         /// Entidad del país asociado.
@@ -53,17 +53,16 @@ namespace Tekus.Domain.Entities
         /// <param name="countryId">Id del país asociado.</param>
         /// <param name="price">Precio del servicio.</param>
         /// <param name="duration">Duración del servicio.</param>
-        public Service(string name, int providerId, int countryId, Price price, ServiceDuration duration)
+        public Service(string name, Guid providerId, Guid countryId, Price price, ServiceDuration duration)
         {
-            // Validación del nombre del servicio
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("El nombre del servicio es requerido.");
 
             Name = name;
             ProviderId = providerId;
             CountryId = countryId;
-            Price = price;
-            Duration = duration;
+            Price = price ?? throw new ArgumentNullException(nameof(price));
+            Duration = duration ?? throw new ArgumentNullException(nameof(duration));
         }
 
         // Constructor privado para frameworks de persistencia como Entity Framework Core
