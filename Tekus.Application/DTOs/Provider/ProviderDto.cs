@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Tekus.Application.DTOs.Provider
+﻿namespace Tekus.Application.DTOs.Provider
 {
     /// <summary>
-    /// DTO para representar un proveedor.
+    /// DTO que representa un proveedor tal como se devuelve desde la aplicación.
+    /// Incluye todos los datos visibles, incluyendo los campos personalizados.
     /// </summary>
     public class ProviderDto
     {
@@ -22,7 +17,7 @@ namespace Tekus.Application.DTOs.Provider
         public string Name { get; set; }
 
         /// <summary>
-        /// NIT del proveedor.
+        /// Número de Identificación Tributaria (NIT) del proveedor.
         /// </summary>
         public string NIT { get; set; }
 
@@ -33,8 +28,8 @@ namespace Tekus.Application.DTOs.Provider
 
         /// <summary>
         /// Campos personalizados adicionales del proveedor.
+        /// Cada clave representa el nombre del campo y el valor su contenido.
         /// </summary>
         public Dictionary<string, string> CustomFields { get; set; }
     }
 }
-

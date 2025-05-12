@@ -5,18 +5,23 @@ using Tekus.Domain.Entities;
 
 namespace Tekus.Application.Mappings
 {
+    /// <summary>
+    /// Perfil de mapeo de AutoMapper que define las conversiones entre entidades del dominio y los DTOs usados en la aplicación.
+    /// </summary>
     public class MappingProfile : Profile
     {
         public MappingProfile()
         {
-            // Configurar los mapeos entre las entidades y los DTOs
-            CreateMap<Provider, ProviderDto>().ReverseMap(); // Para mapeo entre Provider y ProviderDto
-            CreateMap<Provider, CreateProviderDto>().ReverseMap(); // Para mapeo entre Provider y CreateProviderDto
-            CreateMap<Provider, UpdateProviderDto>().ReverseMap(); // Para mapeo entre Provider y UpdateProviderDto
+            // Mapeos para Provider ↔ DTOs
+            // Incluye propiedades como Id, NIT, Name, Email y CustomFields
+            CreateMap<Provider, ProviderDto>().ReverseMap();
+            CreateMap<Provider, CreateProviderDto>().ReverseMap();
+            CreateMap<Provider, UpdateProviderDto>().ReverseMap();
 
-            CreateMap<Service, ServiceDto>().ReverseMap(); // Para mapeo entre Service y ServiceDto
-            CreateMap<Service, CreateServiceDto>().ReverseMap(); // Para mapeo entre Service y CreateServiceDto
-            CreateMap<Service, UpdateServiceDto>().ReverseMap(); // Para mapeo entre Service y UpdateServiceDto
+            // Mapeos para Service ↔ DTOs
+            CreateMap<Service, ServiceDto>().ReverseMap();
+            CreateMap<Service, CreateServiceDto>().ReverseMap();
+            CreateMap<Service, UpdateServiceDto>().ReverseMap();
         }
     }
 }

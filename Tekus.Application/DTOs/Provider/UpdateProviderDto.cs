@@ -1,35 +1,30 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Tekus.Application.DTOs.Provider
+﻿namespace Tekus.Application.DTOs.Provider
 {
     /// <summary>
     /// DTO para actualizar los datos de un proveedor existente.
+    /// Se utiliza para modificar la información básica y los campos personalizados de un proveedor.
     /// </summary>
     public class UpdateProviderDto
     {
         /// <summary>
-        /// Nombre del proveedor.
+        /// Nombre actualizado del proveedor.
         /// </summary>
         public string Name { get; set; }
 
         /// <summary>
-        /// NIT del proveedor.
+        /// Número de Identificación Tributaria (NIT) actualizado del proveedor.
         /// </summary>
         public string NIT { get; set; }
 
         /// <summary>
-        /// Correo electrónico del proveedor.
+        /// Correo electrónico actualizado del proveedor.
         /// </summary>
         public string Email { get; set; }
 
         /// <summary>
         /// Campos personalizados adicionales que se desean actualizar en el proveedor.
+        /// Cada entrada es un par clave-valor que representa un campo dinámico.
         /// </summary>
         public Dictionary<string, string> CustomFields { get; set; } = new();
     }
 }
-

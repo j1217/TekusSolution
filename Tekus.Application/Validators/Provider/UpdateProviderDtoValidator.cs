@@ -3,10 +3,20 @@ using Tekus.Application.DTOs.Provider;
 
 namespace Tekus.Application.Validators.Provider
 {
+    /// <summary>
+    /// Validador para los datos de actualización de un proveedor.
+    /// Verifica que el NIT, nombre y correo electrónico sean válidos.
+    /// </summary>
     public class UpdateProviderDtoValidator : AbstractValidator<UpdateProviderDto>
     {
         public UpdateProviderDtoValidator()
         {
+            RuleFor(x => x.NIT)
+                .NotEmpty()
+                .WithMessage("El NIT del proveedor es obligatorio.")
+                .MaximumLength(20)
+                .WithMessage("El NIT no puede superar los 20 caracteres.");
+
             RuleFor(x => x.Name)
                 .NotEmpty()
                 .WithMessage("El nombre del proveedor es obligatorio.")
