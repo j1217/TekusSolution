@@ -2,7 +2,8 @@
 {
     /// <summary>
     /// DTO para actualizar los datos de un proveedor existente.
-    /// Se utiliza para modificar la información básica y los campos personalizados de un proveedor.
+    /// Se utiliza para modificar la información básica del proveedor
+    /// y sus campos personalizados representados como clave-valor.
     /// </summary>
     public class UpdateProviderDto
     {
@@ -22,8 +23,8 @@
         public string Email { get; set; }
 
         /// <summary>
-        /// Campos personalizados adicionales que se desean actualizar en el proveedor.
-        /// Cada entrada es un par clave-valor que representa un campo dinámico.
+        /// Campos personalizados actualizados para el proveedor.
+        /// Cada entrada representa un campo dinámico clave-valor que será persistido como entidad.
         /// </summary>
         public Dictionary<string, string> CustomFields { get; set; } = new();
     }

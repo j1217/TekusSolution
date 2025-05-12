@@ -6,6 +6,7 @@ namespace Tekus.Domain.Entities
     /// <summary>
     /// Representa un proveedor dentro del sistema. 
     /// El proveedor tiene un NIT, nombre y correo electrónico, todos validados.
+    /// También puede tener campos personalizados definidos como pares clave-valor.
     /// </summary>
     public class Provider : BaseEntity
     {
@@ -29,6 +30,12 @@ namespace Tekus.Domain.Entities
         /// Lista de servicios ofrecidos por el proveedor.
         /// </summary>
         public ICollection<Service> Services { get; private set; } = new List<Service>();
+
+        /// <summary>
+        /// Lista de campos personalizados definidos para este proveedor.
+        /// Cada campo se representa como un par clave-valor independiente.
+        /// </summary>
+        public ICollection<ProviderCustomField> CustomFields { get; private set; } = new List<ProviderCustomField>();
 
         /// <summary>
         /// Constructor para crear un nuevo proveedor.

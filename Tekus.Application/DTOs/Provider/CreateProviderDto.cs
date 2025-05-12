@@ -2,7 +2,8 @@
 {
     /// <summary>
     /// DTO para crear un nuevo proveedor.
-    /// Contiene los datos requeridos y opcionales que se deben proporcionar al registrar un proveedor.
+    /// Contiene los datos requeridos y opcionales que se deben proporcionar al registrar un proveedor,
+    /// incluyendo los campos personalizados definidos como clave-valor.
     /// </summary>
     public class CreateProviderDto
     {
@@ -23,7 +24,7 @@
 
         /// <summary>
         /// Campos personalizados adicionales que se desean agregar al proveedor.
-        /// Cada campo se representa como una clave (nombre) y un valor asociado.
+        /// Estos campos serán convertidos internamente a entidades del dominio.
         /// </summary>
         public Dictionary<string, string> CustomFields { get; set; } = new();
     }
