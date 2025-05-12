@@ -20,8 +20,15 @@ namespace Tekus.Domain.Entities
         public CountryCode Code { get; private set; }
 
         /// <summary>
+        /// Propiedad de navegación para los servicios asociados a este país.
+        /// Un país puede tener múltiples servicios asociados. 
+        /// Esta relación permite acceder a todos los servicios que están vinculados con este país.
+        /// </summary>
+        public ICollection<Service> Services { get; private set; } = new List<Service>();
+
+        /// <summary>
         /// Constructor para crear un nuevo país.
-        /// Se asegura de que el nombre sea válido.
+        /// Se asegura de que el nombre sea válido y no sea nulo ni vacío.
         /// </summary>
         /// <param name="name">Nombre del país.</param>
         /// <param name="code">Código del país.</param>

@@ -13,7 +13,7 @@ namespace Tekus.Domain.Interfaces;
 public interface IServiceRepository
 {
     Task<IEnumerable<Service>> GetAllAsync(string? search = null, int page = 1, int pageSize = 10);
-    Task<IEnumerable<Service>> GetAllByProviderAsync(Guid providerId);
+    Task<IEnumerable<Service>> GetAllByProviderAsync(int providerId);
     Task<Service?> GetByIdAsync(Guid id);
     Task AddAsync(Service service);
     Task UpdateAsync(Service service);

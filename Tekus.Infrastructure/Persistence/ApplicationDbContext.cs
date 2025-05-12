@@ -1,6 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Reflection.Emit;
 using Tekus.Domain.Entities;  // Importar las entidades del dominio
 
 namespace Tekus.Infrastructure.Persistence
@@ -21,23 +19,33 @@ namespace Tekus.Infrastructure.Persistence
         // Definición de las entidades a mapear a la base de datos
         public DbSet<Provider> Providers { get; set; }   // Proveedores
         public DbSet<Service> Services { get; set; }     // Servicios
-        public DbSet<Country> Countries { get; set; }   // Países
+        public DbSet<Country> Countries { get; set; }    // Países
 
-        // Método para realizar configuraciones específicas en el modelo
+        /// <summary>
+        /// Método para realizar configuraciones específicas en el modelo.
+        /// Se definen las relaciones entre las entidades y otras configuraciones personalizadas.
+        /// </summary>
+        /// <param name="modelBuilder">Objeto que se utiliza para configurar el modelo.</param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // Configuración adicional si es necesaria, como relaciones y restricciones
-            modelBuilder.Entity<Provider>().HasKey(p => p.Id);
-            modelBuilder.Entity<Service>().HasKey(s => s.Id);
-            modelBuilder.Entity<Country>().HasKey(c => c.Id);
+            // Configuración de las claves primarias para las entidades
+            modelBuilder.Entity<Provider>().HasKey(p => p.Id);    // Clave primaria para la entidad Provider
+            modelBuilder.Entity<Service>().HasKey(s => s.Id);      // Clave primaria para la entidad Service
+            modelBuilder.Entity<Country>().HasKey(c => c.Id);      // Clave primaria para la entidad Country
 
-            // Configuración de relaciones adicionales, si aplica (por ejemplo, Provider-Services)
+            // Relación de uno a muchos entre Provider y Service
             modelBuilder.Entity<Provider>()
-                .HasMany(p => p.Services)
-                .WithOne(s => s.Provider)
-                .HasForeignKey(s => s.ProviderId);
+                .HasMany(p => p.Services)   // Un proveedor puede tener muchos servicios
+                .WithOne(s => s.Provider)   // Cada servicio tiene un solo proveedor
+                .HasForeignKey(s => s.ProviderId);  // La clave foránea de Service apunta a ProviderId
+
+            // Relación de uno a muchos entre Country y Service (si es necesario)
+            modelBuilder.Entity<Country>()
+                .HasMany(c => c.Services)  // Un país puede tener muchos servicios
+                .WithOne(s => s.Country)   // Cada servicio tiene un solo país
+                .HasForeignKey(s => s.CountryId);  // La clave foránea de Service apunta a CountryId
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FluentValidation;
-using Tekus.Application.DTOs.Service;
+using Tekus.Application.DTOs.Services;
 
 namespace Tekus.Application.Validators.Service
 {
