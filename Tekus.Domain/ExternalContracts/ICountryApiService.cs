@@ -2,17 +2,17 @@
 using System.Threading.Tasks;
 using Tekus.Domain.Entities;
 
-namespace Infrastructure.ExternalServices
+namespace Tekus.Domain.ExternalContracts
 {
     /// <summary>
-    /// Define la interfaz para el servicio que consulta países desde una API externa.
+    /// Contrato para servicios que consultan países desde fuentes externas.
     /// </summary>
     public interface ICountryApiService
     {
         /// <summary>
-        /// Obtiene la lista de países desde una fuente externa.
+        /// Obtiene una lista de países desde una fuente externa.
         /// </summary>
-        /// <returns>Una lista de objetos <see cref="Country"/>.</returns>
+        /// <returns>Lista de entidades de país.</returns>
         Task<List<Country>> GetCountriesAsync();
     }
 }

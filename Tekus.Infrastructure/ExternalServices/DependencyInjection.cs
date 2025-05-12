@@ -1,6 +1,8 @@
-﻿using Infrastructure.ExternalServices;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System;
 using Tekus.Infrastructure.ExternalServices;
+using Tekus.Domain.ExternalContracts;
+using Infrastructure.ExternalServices;
 
 namespace Tekus.Infrastructure.ExternalServices
 {
@@ -10,7 +12,7 @@ namespace Tekus.Infrastructure.ExternalServices
     public static class DependencyInjection
     {
         /// <summary>
-        /// Agrega el servicio que consume la API externa de países al contenedor de dependencias.
+        /// Agrega los servicios externos necesarios al contenedor de dependencias.
         /// </summary>
         /// <param name="services">Colección de servicios de la aplicación.</param>
         /// <returns>La colección de servicios modificada.</returns>
@@ -19,7 +21,6 @@ namespace Tekus.Infrastructure.ExternalServices
             // Registrar el servicio que consume la API de países
             services.AddHttpClient<ICountryApiService, CountryApiService>(client =>
             {
-                // Configuración de la URL base de la API
                 client.BaseAddress = new Uri("https://restcountries.com/v3.1/all");
                 client.DefaultRequestHeaders.Add("Accept", "application/json");
             });
