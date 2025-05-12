@@ -30,6 +30,7 @@ namespace Tekus.Application.DependencyInjection
             services.AddScoped<IProvidersService, ProvidersService>();
             services.AddScoped<ICountriesService, CountriesService>();
             services.AddScoped<IServicesService, ServicesService>();
+            services.AddScoped<IReportsService, ReportsService>();
 
             return services;
         }
